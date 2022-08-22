@@ -18,7 +18,7 @@ class OrderController extends Controller
 
     public function index()
     {
-        $categoryMenu = Category::orderBy('category_name','asc')->get();
+        $categoryMenu = Category::orderBy('category_name', 'asc')->get();
         $active = Auth::id();
         $orders = DB::table('orders')
             ->join('baskets', 'orders.basket_id', '=', 'baskets.id')
@@ -29,13 +29,13 @@ class OrderController extends Controller
             ->get();
 
 
-        return view('orders', compact('orders','categoryMenu'));
+        return view('orders', compact('orders', 'categoryMenu'));
     }
 
     public function detail($id)
     {
-        $categoryMenu = Category::orderBy('category_name','asc')->get();
+        $categoryMenu = Category::orderBy('category_name', 'asc')->get();
         $order = Order::with('baskets.basket_products.product')->where('orders.id', $id)->firstOrFail();
-        return view('order-detail', compact('order','categoryMenu'));
+        return view('order-detail', compact('order', 'categoryMenu'));
     }
 }

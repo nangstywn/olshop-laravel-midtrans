@@ -376,6 +376,7 @@ jQuery(document).ready(function($)
 		        $(this).addClass('active');
 		 
 		        var selector = $(this).attr('data-filter');
+				// console.log(selector);
 		        $('.product-grid').isotope({
 		            filter: selector,
 		            animationOptions: {
@@ -384,9 +385,7 @@ jQuery(document).ready(function($)
 		                queue: false
 		            }
 		        });
-
-		        
-		         return false;
+		        return false;
 		    });
     	}
     }

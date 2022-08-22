@@ -30,7 +30,7 @@ input.qtyminus {
     border: 1px solid gainsboro;
 }
 </style>
-<div class="main_slider" style="background-image:url(<?php echo e(asset('assets/images/slider_1.jpg')); ?>)">
+<div class="main_slider" style="background-image:url('assets/images/slider_1.jpg')">
     <div class="container fill_height">
         <div class="row align-items-center fill_height">
             <div class="col">
@@ -73,13 +73,12 @@ input.qtyminus {
         <div class="row">
             <div class="col">
                 <div class="product-grid" data-isotope='{ "itemSelector": ".product-item", "layoutMode": "fitRows" }'>
-
-                    <?php $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <a href="/product/<?php echo e($product->slug); ?>">
                         <div class="product-item <?php echo e($product->category_id); ?> ">
                             <div class="product discount product_filter">
                                 <div class="product_image">
-                                    <?php echo $product->thumbs; ?>
+                                    <?php echo $img[$key]['thumbs']; ?>
 
                                 </div>
 
@@ -88,7 +87,8 @@ input.qtyminus {
                                             href="/product/<?php echo e($product->slug); ?>"><?php echo e($product->product_name); ?></a>
                                     </h6>
 
-                                    <div class="product_price"><?php echo e(Rupiah::getRupiah(($product->product_price))); ?>
+                                    <div class="product_price">
+                                        <?php echo e(Rupiah::getRupiah(($product->product_price))); ?>
 
                                         <span><?php echo e(Rupiah::getRupiah(($product->original_price ))); ?>
 
@@ -99,7 +99,10 @@ input.qtyminus {
                                         <input type='text' name='quantity' id="quantity" value='1' class='qty' />
                                         <input type='button' value='+' class='qtyplus plus' field='quantity' />
                                     </p>
-                                    <!-- <input type="number" class="quantity" id="quantity" name="quantity" value="1" style="width: 50px; margin-right: 10px;"> -->
+                                    <div>
+                                        <span><?php echo e($product->qty); ?> Terjual</span>
+                                    </div>
+                                    
                                 </div>
                             </div>
                             <div class="add_to_cart_button red_button"><a

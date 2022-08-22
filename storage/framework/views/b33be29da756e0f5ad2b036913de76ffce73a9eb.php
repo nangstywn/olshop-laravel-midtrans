@@ -6,6 +6,35 @@
 
 
 <?php $__env->startSection('content'); ?>
+<style>
+.addqty {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    text-align: center;
+}
+
+.qty {
+    width: 40px;
+    height: 25px;
+    text-align: center;
+    border: 1px solid gainsboro;
+}
+
+input.qtyplus {
+    width: 30px;
+    height: 25px;
+    cursor: pointer;
+    border: 1px solid gainsboro;
+}
+
+input.qtyminus {
+    width: 30px;
+    height: 25px;
+    cursor: pointer;
+    border: 1px solid gainsboro;
+}
+</style>
 
 <div class="container single_product_container">
     <div class="row">
@@ -36,15 +65,12 @@
                     <div class="col-lg-3 thumbnails_col order-lg-1 order-2">
                         <div class="single_product_thumbnails">
                             <ul>
-
                                 <?php $__currentLoopData = $product->images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $image): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <li class="active">
-                                    <img src="<?php echo asset(" uploads/thumb_".$image->name); ?>" alt=""
-                                    data-image="<?php echo asset("uploads/".$image->name); ?>">
+                                <li class="item">
+                                    <img src="<?php echo asset('uploads/thumb_'.$image->name); ?>" alt=""
+                                        data-image="<?php echo asset('uploads/'.$image->name); ?>">
                                 </li>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-
-
                             </ul>
                         </div>
 
@@ -54,8 +80,8 @@
                     <div class="col-lg-9 image_col order-lg-2 order-1">
                         <div class="single_product_image">
                             <?php $__currentLoopData = $product->images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $image): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <div class="single_product_image_background" style="background-image:url('<?php echo asset("
-                                uploads/thumb_".$image->name); ?>')"></div>
+                            <div class="single_product_image_background" style="background-image:url('<?php echo e(asset("
+                                uploads/thumb_".$image->name)); ?>')"></div>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
                     </div>
@@ -69,18 +95,27 @@
                     <p><?php echo $product->product_detail; ?></p>
                 </div>
 
-                <div class="original_price"><?php echo e(number_format($product->original_price)); ?></div>
-                <div class="product_price"><?php echo e(number_format($product->product_price)); ?></div>
+                <div class="original_price"><?php echo e(Rupiah::getRupiah($product->original_price)); ?></div>
+                <div class="product_price"><?php echo e(Rupiah::getRupiah($product->product_price)); ?></div>
 
                 <div class="product_details_title">
                     <span>Quantity:</span>
-                    <input style="width: 50px; margin-right: 10px;" type="number" class="quantity" id="quantity"
-                        name="quantity" value="1">
+                    <p class="addqty">
+                        <input type='button' value='-' class='qtyminus minus' field='quantity' />
+                        <input type='text' name='quantity' id="quantity" value='1' class='qty' />
+                        <input type='button' value='+' class='qtyplus plus' field='quantity' />
+                    </p>
+                    <!-- <input style="width: 50px; margin-right: 10px;" type="number" class="quantity" id="quantity" name="quantity" value="1"> -->
 
                 </div>
+                <div>
+                    <a class="btn add-cart" href="<?php echo e(route('basket.create', ['id' => $product->id])); ?>"
+                        style="border:1px solid #D1001B; border-radius:0; color: #D1001B; background-color: #FAEAED; margin-right:10px;"><i
+                            class="fa fa-shopping-cart"></i> Add to
+                        Cart</a>
+                    <a class="btn" href="<?php echo e(route('basket.create', ['id' => $product->id])); ?>"
+                        style="border-radius:0; color: white; background-color: #D1001B"> Buy Now</a>
 
-                <div class="red_button" style="margin-top: 30px;">
-                    <a href="<?php echo e(route('basket.create', ['id' => $product->id])); ?>">add to cart</a>
                 </div>
             </div>
         </div>
@@ -141,9 +176,9 @@
 
 
 <script>
-$('.red_button').find('a').click(function(event) {
+$('.add-cart').click(function(event) {
     event.preventDefault();
-    var quantity = $(this).parent().prev().find('input').val();
+    var quantity = $(this).parent().prev().find('input[name="quantity"]').val();
     $.ajax({
         type: "POST",
         url: $(this).attr('href'),
@@ -151,12 +186,34 @@ $('.red_button').find('a').click(function(event) {
             quantity: quantity
         },
         success: function(data) {
-            console.log(data);
             $('#checkout_items').html(data.cartCount);
+        },
+        error: function() {
+            window.location.href = "<?php echo e(route('login')); ?>"
+        }
+        // return false; //for good measure
+    });
+});
+
+$('.addqty').on('click', '.plus', function(e) {
+    let $input = $(this).prev('input.qty');
+    let val = parseInt($input.val());
+    $input.val(val + 1).change();
+});
+
+$('.addqty').on('click', '.minus',
+    function(e) {
+        let $input = $(this).next('input.qty');
+        var val = parseInt($input.val());
+        if (val > 0) {
+            $input.val(val - 1).change();
         }
     });
-    return false; //for good measure
-});
+
+$(document).ready(function() {
+    let img = $('.item img').attr('data-image')
+    $('.single_product_image_background').css('background-image', 'url(' + img + ')')
+})
 </script>
 
 

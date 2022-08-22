@@ -29,21 +29,25 @@ class Product extends Model
 
     public function categories()
     {
-        return $this->belongsTo('App\Category','category_id','id');
+        return $this->belongsTo('App\Category', 'category_id', 'id');
+    }
+
+    public function basketProduct()
+    {
+        return $this->hasMany('App\BasketProduct');
     }
 
 
 
     public function images()
     {
-        return $this->morphMany("App\Images","imageable");
+        return $this->morphMany("App\Images", "imageable");
     }
 
     public function getThumbsAttribute()
     {
-        $images = asset("uploads/thumb_".$this->images()->first()->name);
-        return '<img src="' .$images.'" class="img-thumbnail" width="100" />';
+        $images = asset("uploads/thumb_" . $this->images()->first()->name);
+        // dd($images);
+        return '<img src="' . $images . '" class="img-thumbnail" width="100" />';
     }
-
-
 }

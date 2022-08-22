@@ -252,7 +252,7 @@ section
 .super_container
 {
 	width: 100%;
-	overflow: hidden;
+	overflow: visible;
 }
 
 /*********************************
@@ -261,6 +261,7 @@ section
 
 .header
 {
+	position: sticky;
 	top: 0;
 	left: 0;
 	width: 100%;

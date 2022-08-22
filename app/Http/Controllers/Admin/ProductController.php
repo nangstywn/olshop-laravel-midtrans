@@ -22,6 +22,7 @@ class ProductController extends Controller
         //
         $categoryMenu = Category::orderBy('category_name', 'asc')->get();
         $products = Product::orderBy('id', 'desc')->paginate(5);
+        // dd($products);
         return view('admin.products', compact('products', 'categoryMenu'));
     }
 
@@ -48,7 +49,8 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         //
-        $this->validate($request,
+        $this->validate(
+            $request,
             [
                 "category_id" => "required",
                 "product_name" => "required",
@@ -56,7 +58,8 @@ class ProductController extends Controller
                 "original_price" => "required|numeric",
                 "product_price" => "required|numeric",
                 "img" => "required"
-            ]);
+            ]
+        );
 
 
         $input = $request->only('category_id', 'product_name', 'product_detail', 'original_price', 'product_price');
@@ -125,14 +128,16 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         //
-        $this->validate($request,
+        $this->validate(
+            $request,
             [
 
                 "product_detail" => "required",
                 "original_price" => "required|numeric",
                 "product_price" => "required|numeric"
 
-            ]);
+            ]
+        );
         $input = $request->only('category_id', 'product_name', 'product_detail', 'original_price', 'product_price');
         $products = Product::find($id);
         $products->update($input);
@@ -150,7 +155,6 @@ class ProductController extends Controller
                 }
 
                 $imgs[] = $image_name;
-
             }
         }
 
@@ -180,7 +184,5 @@ class ProductController extends Controller
         Session::flash("status", 1);
 
         return redirect()->route('admin-products.index');
-
-
     }
 }

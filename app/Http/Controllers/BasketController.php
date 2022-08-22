@@ -62,30 +62,31 @@ class BasketController extends Controller
      */
     public function create()
     {
-        //
-
-
-        $quantity = request('quantity');
-        if ($quantity < 1) {
+        if (!Auth::check()) {
             abort(400);
-        }
-        $product = Product::find(request('id'));
-        $cartItem = Cart::add($product->id, $product->product_name, $quantity, $product->product_price, ['slug' => $product->slug]);
-
-        if (Auth::check()) {
-            $active_basket_id = session('active_basket_id');
-            if (!isset($active_basket_id)) {
-                $active_basket = Basket::create([
-                    'user_id' => Auth::id()
-                ]);
-                $active_basket_id = $active_basket->id;
-                session()->put('active_basket_id', $active_basket_id);
+        } else {
+            $quantity = request('quantity');
+            if ($quantity < 1) {
+                abort(400);
             }
+            $product = Product::find(request('id'));
+            $cartItem = Cart::add($product->id, $product->product_name, $quantity, $product->product_price, ['slug' => $product->slug]);
 
-            BasketProduct::updateOrCreate(
-                ['basket_id' => $active_basket_id, 'product_id' => $product->id],
-                ['quantity' => $cartItem->qty, 'price' => $product->product_price, 'status' => 'Your orders have received.']
-            );
+            if (Auth::check()) {
+                $active_basket_id = session('active_basket_id');
+                if (!isset($active_basket_id)) {
+                    $active_basket = Basket::create([
+                        'user_id' => Auth::id()
+                    ]);
+                    $active_basket_id = $active_basket->id;
+                    session()->put('active_basket_id', $active_basket_id);
+                }
+
+                BasketProduct::updateOrCreate(
+                    ['basket_id' => $active_basket_id, 'product_id' => $product->id],
+                    ['quantity' => $cartItem->qty, 'price' => $product->product_price, 'status' => 'Your orders have received.']
+                );
+            }
         }
         return response()->json(['cartCount' => Cart::count()]);
     }

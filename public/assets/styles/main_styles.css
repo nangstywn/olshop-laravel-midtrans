@@ -1007,7 +1007,8 @@ section
 .product-item
 {
 	width: 20%;
-	height: 380px;
+	/* height: 380px; */
+	height: 410px;
 	cursor: pointer;
 }
 .product-item::after

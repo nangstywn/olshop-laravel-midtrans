@@ -35,6 +35,22 @@ input.qtyminus {
     cursor: pointer;
     border: 1px solid gainsboro;
 }
+
+.add-cart,
+.add-cart:hover {
+    border: 1px solid #D1001B;
+    border-radius: 0;
+    color: #D1001B;
+    background-color: #FAEAED;
+    margin-right: 10px;
+}
+
+.buy,
+.buy:hover {
+    border-radius: 0;
+    color: white;
+    background-color: #D1001B;
+}
 </style>
 
 <div class="container single_product_container">
@@ -109,12 +125,10 @@ input.qtyminus {
 
                 </div>
                 <div>
-                    <a class="btn add-cart" href="{{ route('basket.create', ['id' => $product->id]) }}"
-                        style="border:1px solid #D1001B; border-radius:0; color: #D1001B; background-color: #FAEAED; margin-right:10px;"><i
+                    <a class="btn add-cart" href="{{ route('basket.create', ['id' => $product->id]) }}"><i
                             class="fa fa-shopping-cart"></i> Add to
                         Cart</a>
-                    <a class="btn" href="{{ route('basket.create', ['id' => $product->id]) }}"
-                        style="border-radius:0; color: white; background-color: #D1001B"> Buy Now</a>
+                    <a class="btn buy" href="{{ route('basket.create', ['id' => $product->id]) }}"> Buy Now</a>
 
                 </div>
             </div>
@@ -215,8 +229,6 @@ $(document).ready(function() {
     $('.single_product_image_background').css('background-image', 'url(' + img + ')')
 })
 </script>
-
-
 
 <script src="{{ asset('assets/plugins/jquery-ui-1.12.1.custom/jquery-ui.js') }}"></script>
 <script src="{{ asset('assets/js/single_custom.js') }}"></script>

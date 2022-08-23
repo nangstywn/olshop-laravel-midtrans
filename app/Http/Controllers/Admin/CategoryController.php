@@ -77,7 +77,6 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        //
         $categoryMenu = Category::orderBy('category_name', 'asc')->get();
         $category = Category::find($id);
         $categories = Category::pluck('category_name', 'id')->all();
@@ -94,10 +93,12 @@ class CategoryController extends Controller
     public function update(Request $request, $id)
     {
         //
-        $this->validate($request,
+        $this->validate(
+            $request,
             [
                 "category_name" => "required|max:255"
-            ]);
+            ]
+        );
 
         $category = Category::find($id);
 

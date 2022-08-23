@@ -18,9 +18,9 @@ class OrderController extends Controller
     public function index()
     {
         //
-        $categoryMenu = Category::orderBy('category_name','asc')->get();
+        $categoryMenu = Category::orderBy('category_name', 'asc')->get();
         $orders = Order::with('baskets')->orderByDesc('id')->paginate(8);
-        return view('admin.orders',compact('orders','categoryMenu'));
+        return view('admin.orders', compact('orders', 'categoryMenu'));
     }
 
     /**
@@ -65,13 +65,13 @@ class OrderController extends Controller
     {
         //
         $status = [
-          "Your Order Received" => "Your Order Received",
-          "Shipped" => "Shipped ",
-          "Order Complete" => "Order Complete"
+            "Your Order Received" => "Your Order Received",
+            "Shipped" => "Shipped ",
+            "Order Complete" => "Order Complete"
         ];
         $orders = Order::find($id);
-        $categoryMenu = Category::orderBy('category_name','asc')->get();
-        return view('admin.orders-edit', compact('orders','status','categoryMenu'));
+        $categoryMenu = Category::orderBy('category_name', 'asc')->get();
+        return view('admin.orders-edit', compact('orders', 'status', 'categoryMenu'));
     }
 
     /**

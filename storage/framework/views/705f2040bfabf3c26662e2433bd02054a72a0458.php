@@ -105,7 +105,7 @@ input.qtyminus {
                                     
                                 </div>
                             </div>
-                            <div class="add_to_cart_button red_button"><a
+                            <div style="margin-top:30px" class="add_to_cart_button red_button"><a
                                     href="<?php echo e(route('basket.create', ['id' => $product->id])); ?>">add to cart</a>
                             </div>
                         </div>
@@ -225,6 +225,9 @@ $(document).ready(($) => {
             success: function(data) {
                 console.log(data);
                 $('#checkout_items').html(data.cartCount);
+            },
+            error: function() {
+                window.location.href = "<?php echo e(route('login')); ?>"
             }
         });
         return false; //for good measure
@@ -239,6 +242,7 @@ $(document).ready(($) => {
 
     $('.addqty').on('click', '.minus',
         function(e) {
+            alert('a')
             let $input = $(this).next('input.qty');
             var val = parseInt($input.val());
             if (val > 0) {

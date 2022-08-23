@@ -70,8 +70,8 @@ class ProductController extends Controller
         $imgs = array();
 
         if ($files = $request->file("img")) {
-            foreach ($files as $file) {
-                $rand = rand(1, 999999);
+            foreach ($files as $key => $file) {
+                $rand = rand(1, 999999) . $key . $product;
                 $image_name = $rand . "." . $file->getClientOriginalExtension();
                 $thumb = "thumb_" . $rand . "." . $file->getClientOriginalExtension();
 
@@ -127,15 +127,12 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
         $this->validate(
             $request,
             [
-
                 "product_detail" => "required",
                 "original_price" => "required|numeric",
                 "product_price" => "required|numeric"
-
             ]
         );
         $input = $request->only('category_id', 'product_name', 'product_detail', 'original_price', 'product_price');
@@ -144,19 +141,74 @@ class ProductController extends Controller
 
 
         $imgs = array();
-
         if ($files = $request->file("img")) {
-            foreach ($products->images as $product) {
-                $image_name = $product->name;
-                $thumb = "thumb_" . $product->name;
-                foreach ($files as $file) {
-                    Image::make($file->getRealPath())->resize(454, 527)->save(public_path("uploads/" . $image_name));
-                    Image::make($file->getRealPath())->resize(235, 235)->save(public_path("uploads/" . $thumb));
-                }
-
+            // foreach ($product->images as $product) {
+            $n = count($files);
+            for ($i = 0; $i < $n; $i++) {
+                // dd($product->images[$i]);
+                $rand = rand(1, 999999) . $products->id;
+                $image_name = isset($products->images[$i]) ? $products->images[$i]->name : $rand . "." . $files[$i]->getClientOriginalExtension();
+                $thumb = isset($products->images[$i]) ? "thumb_" . $products->images[$i]->name : "thumb_" . $rand . "." . $files[$i]->getClientOriginalExtension();
+                // $file = $files[$i];
+                // foreach ($files as $file) {
+                Image::make($files[$i]->getRealPath())->resize(454, 527)->save(public_path("uploads/" . $image_name));
+                Image::make($files[$i]->getRealPath())->resize(235, 235)->save(public_path("uploads/" . $thumb));
                 $imgs[] = $image_name;
             }
+            $foto = [];
+            foreach ($products->images as $product) {
+                $foto[] = $product->name;
+            }
+            $ims = [];
+            foreach ($imgs as $im) {
+                if (!in_array($im, $foto)) {
+                    $input = [];
+                    $input["name"] = $im;
+                    $input["imageable_id"] = $products->id;
+                    $input["imageable_type"] = "App\Product";
+                    $imgs[] = $im;
+                    Images::create($input);
+                }
+            }
+            // dd($ims);
+            foreach ($foto as $fotos) {
+                if (!in_array($fotos, $imgs)) {
+                    $img = $fotos;
+                    @unlink(public_path("uploads/" . $img));
+                    @unlink(public_path("uploads/thumb_" . $img));
+                    Images::where("imageable_id", $products->id)->where('name', $img)->where("imageable_type", "App\Product")->delete();
+                }
+            }
+
+            //     if (in_array($product->name, $imgs)) {
+            //         $foto[] = $imgs;
+            //     } else {
+            //         $input = [];
+            //         $input["name"] = $image_name;
+            //         $input["imageable_id"] = $product->id;
+            //         $input["imageable_type"] = "App\Product";
+
+
+            //         $imgs[] = $image_name;
+            //         Images::create($input);
+            //     }
+            // }
+            // dd($foto);
         }
+
+
+
+        // if ($files = $request->file("img")) {
+        //     foreach ($products->images as $product) {
+        //         $image_name = $product->name;
+        //         $thumb = "thumb_" . $product->name;
+        //         foreach ($files as $file) {
+        //             Image::make($file->getRealPath())->resize(454, 527)->save(public_path("uploads/" . $image_name));
+        //             Image::make($file->getRealPath())->resize(235, 235)->save(public_path("uploads/" . $thumb));
+        //         }
+        //         $imgs[] = $image_name;
+        //     }
+        // }
 
         Session::flash("status", 1);
         return redirect()->route('admin-products.index');

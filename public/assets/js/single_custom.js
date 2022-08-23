@@ -189,7 +189,7 @@ jQuery(document).ready(function($)
 			thumbs.each(function()
 			{
 				var item = $(this);
-				item.on('click', function()
+				item.on('mouseover', function()
 				{
 					thumbs.removeClass('active');
 					item.addClass('active');
